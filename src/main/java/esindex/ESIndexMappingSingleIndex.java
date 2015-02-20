@@ -96,10 +96,10 @@ public class ESIndexMappingSingleIndex extends ConfigureClient {
 
 		}
 		long endTimeAllDocs = System.currentTimeMillis();
-		long totalTimeAllDocs = (endTimeAllDocs - startTimeAllDocs) / 1000;
-		log.info("Total Time (s) to index all the documents [Sum Individual Docs]: "
+		long totalTimeAllDocs = (endTimeAllDocs - startTimeAllDocs);
+		log.info("Total Time (ms) to index all the documents [Sum Individual Docs]: "
 				+ sumTimeIndivDocs);
-		log.info("Total Time (s) to index all the documents [Outside Loop]: "
+		log.info("Total Time (ms) to index all the documents [Outside Loop]: "
 				+ totalTimeAllDocs);
 
 		// Closing Client

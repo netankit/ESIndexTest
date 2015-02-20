@@ -89,7 +89,7 @@ public class ESIndexMappingCustomIndex extends ConfigureClient {
 		log.info("### INDEX LEVEL ###");
 		long finalSumIndexTime = 0;
 		for (int i = 0; i < indexTimeIndexes.size(); i++) {
-			log.info("Total Indexing Time for Index#" + (i + 1) + " is: "
+			log.info("Total Indexing Time (ms) for Index#" + (i + 1) + " is: "
 					+ indexTimeIndexes.get(i));
 			finalSumIndexTime += indexTimeIndexes.get(i);
 		}
