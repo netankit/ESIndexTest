@@ -1,8 +1,7 @@
 package esindex;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,7 +9,6 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.RandomStringUtils;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
 
 public class ESIndexMappingCustomIndex extends ConfigureClient {
 
@@ -44,14 +42,16 @@ public class ESIndexMappingCustomIndex extends ConfigureClient {
 		/*
 		 * ES node and client initialization.
 		 */
-		Node node = nodeBuilder().node();
 		Client client = setupClient(esClusterName, esHostName, esPortNum);
 
 		log.info("Starting Indexing.....");
 
-		long startTimeAllDocs = System.currentTimeMillis();
-		long sumTimeIndivDocs = 0;
+		long startTimeAllIndex = System.currentTimeMillis();
+		ArrayList<Long> indexTimeIndexes = new ArrayList<Long>();
+
 		for (int indexId = 1; indexId <= numOfIndexes; indexId++) {
+			long startTimeIndivIndex = System.currentTimeMillis();
+
 			for (int docId = 1; docId <= numOfDocuments; docId++) {
 				long startTimeIndivDoc = System.currentTimeMillis();
 				/* Populates the Map "jsonObject" for indexing */
@@ -68,19 +68,33 @@ public class ESIndexMappingCustomIndex extends ConfigureClient {
 						.setSource(jsonObject).execute().actionGet();
 				long endTimeIndivDoc = System.currentTimeMillis();
 				long totalTimeIndivDoc = (endTimeIndivDoc - startTimeIndivDoc);
-				sumTimeIndivDocs += totalTimeIndivDoc;
-				log.info("Total Time (ms) to index document #" + docId + " : "
-						+ totalTimeIndivDoc);
-
+				log.info("Total Indexing Time (ms) for index #" + indexId
+						+ ", document #" + docId + " : " + totalTimeIndivDoc);
 			}
-		}
-		long endTimeAllDocs = System.currentTimeMillis();
-		long totalTimeAllDocs = (endTimeAllDocs - startTimeAllDocs) / 1000;
-		log.info("Total Time (s) to index all the documents [Sum Individual Docs]: "
-				+ sumTimeIndivDocs / 1000);
-		log.info("Total Time (s) to index all the documents [Outside Loop]: "
-				+ totalTimeAllDocs);
 
+			long endTimeIndivIndex = System.currentTimeMillis();
+			long totaltimeIndivIndex = endTimeIndivIndex - startTimeIndivIndex;
+			indexTimeIndexes.add(totaltimeIndivIndex);
+
+		}
+		long endTimeAllIndex = System.currentTimeMillis();
+		long totalTimeAllIndex = (endTimeAllIndex - startTimeAllIndex);
+
+		log.info("Total Time to index all the documents [Outside Loop]: "
+				+ totalTimeAllIndex);
+
+		/* Logging Index Level Time */
+
+		log.info("### INDEX LEVEL ###");
+		long finalSumIndexTime = 0;
+		for (int i = 0; i < indexTimeIndexes.size(); i++) {
+			log.info("Total Indexing Time for Index#" + (i + 1) + " is: "
+					+ indexTimeIndexes.get(i));
+			finalSumIndexTime += indexTimeIndexes.get(i);
+		}
+
+		log.info("Total time as Sum of Indexing all Indexes:  "
+				+ finalSumIndexTime);
 		// Closing Client
 		closeClient(client);
 

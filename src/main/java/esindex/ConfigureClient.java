@@ -1,5 +1,7 @@
 package esindex;
 
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.node.Node;
 
 public abstract class ConfigureClient {
 
@@ -18,6 +21,7 @@ public abstract class ConfigureClient {
 
 		// Connects to Remote Client defined by the esHostName and Cluster
 		// defined by esClusterName
+		Node node = nodeBuilder().node();
 
 		Settings settings = ImmutableSettings.settingsBuilder()
 				.put("cluster.name", esClusterName).build();

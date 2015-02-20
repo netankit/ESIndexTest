@@ -1,7 +1,5 @@
 package esindex;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,10 +7,10 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
 
 public class ESIndexMappingSingleIndex extends ConfigureClient {
 	public static void main(String[] args) throws SecurityException,
@@ -46,8 +44,11 @@ public class ESIndexMappingSingleIndex extends ConfigureClient {
 		Logger log = setupLog(logFileName,
 				ESIndexMappingSingleIndex.class.getName());
 
-		Node node = nodeBuilder().node();
 		Client client = setupClient(esClusterName, esHostName, esPortNum);
+
+		// Create Index Request
+		CreateIndexRequest request = new CreateIndexRequest(indexName);
+		client.admin().indices().create(request).actionGet();
 
 		log.info("Starting Indexing.....");
 
@@ -94,5 +95,4 @@ public class ESIndexMappingSingleIndex extends ConfigureClient {
 		closeClient(client);
 
 	}
-
 }
