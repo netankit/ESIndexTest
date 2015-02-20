@@ -61,6 +61,7 @@ public class ESIndexMappingCustomIndex extends ConfigureClient {
 							RandomStringUtils.randomAlphanumeric(5));
 				}
 
+				@SuppressWarnings("unused")
 				IndexResponse response = client
 						.prepareIndex(
 								indexNamePrefix + String.valueOf(indexId),
