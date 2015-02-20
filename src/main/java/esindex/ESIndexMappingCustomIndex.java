@@ -5,20 +5,14 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.Node;
 
-public class ESIndexMappingCustomIndex {
+public class ESIndexMappingCustomIndex extends ConfigureClient {
 
 	public static void main(String[] args) throws SecurityException,
 			IOException {
@@ -44,29 +38,14 @@ public class ESIndexMappingCustomIndex {
 		int numOfDocuments = Integer.parseInt(args[7]);
 		int numOfFields = Integer.parseInt(args[8]);
 
-		Logger log = Logger
-				.getLogger(ESIndexMappingCustomIndex.class.getName());
-		FileHandler fh;
-		fh = new FileHandler(logFileName);
-		log.addHandler(fh);
-		SimpleFormatter formatter = new SimpleFormatter();
-		fh.setFormatter(formatter);
+		Logger log = setupLog(logFileName,
+				ESIndexMappingCustomIndex.class.getName());
 
 		/*
 		 * ES node and client initialization.
 		 */
-
 		Node node = nodeBuilder().node();
-
-		// Connects to Remote Client defined by the esHostName and Cluster
-		// defined by esClusterName
-
-		Settings settings = ImmutableSettings.settingsBuilder()
-				.put("cluster.name", esClusterName).build();
-
-		Client client = new TransportClient(settings)
-				.addTransportAddress(new InetSocketTransportAddress(esHostName,
-						esPortNum));
+		Client client = setupClient(esClusterName, esHostName, esPortNum);
 
 		log.info("Starting Indexing.....");
 
@@ -102,8 +81,8 @@ public class ESIndexMappingCustomIndex {
 		log.info("Total Time (s) to index all the documents [Outside Loop]: "
 				+ totalTimeAllDocs);
 
-		// Closing
-		client.close();
+		// Closing Client
+		closeClient(client);
 
 	}
 }
