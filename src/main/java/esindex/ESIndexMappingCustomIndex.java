@@ -57,7 +57,7 @@ public class ESIndexMappingCustomIndex extends ConfigureClient {
 				/* Populates the Map "jsonObject" for indexing */
 				Map<String, Object> jsonObject = new HashMap<String, Object>();
 				for (int i = 1; i <= numOfFields; i++) {
-					jsonObject.put("field" + i,
+					jsonObject.put(RandomStringUtils.randomAlphabetic(6),
 							RandomStringUtils.randomAlphanumeric(5));
 				}
 

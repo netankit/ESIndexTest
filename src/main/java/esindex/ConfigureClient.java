@@ -21,6 +21,7 @@ public abstract class ConfigureClient {
 
 		// Connects to Remote Client defined by the esHostName and Cluster
 		// defined by esClusterName
+		@SuppressWarnings("unused")
 		Node node = nodeBuilder().node();
 
 		Settings settings = ImmutableSettings.settingsBuilder()
